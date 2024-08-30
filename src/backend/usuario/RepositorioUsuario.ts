@@ -1,14 +1,15 @@
+import { Usuario } from "@/core/model/Usuario";
 import { Prisma } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 
 export default class RepositorioUsuario {
     private static db: PrismaClient = new PrismaClient()
 
-    static async obterTodos() {
+    static async obterTodos(): Promise<Usuario[]> {
         return await this.db.usuario.findMany()
     }
 
-    static async salvar(usuario: any) {
+    static async salvar(usuario: Usuario) : Promise<Usuario>{
         return await this.db.usuario.upsert({
             where: { id: usuario.id},
             update: usuario,
@@ -18,8 +19,11 @@ export default class RepositorioUsuario {
 
 
     
-    static async obterPorId(id: string) {
-        return await this.db.usuario.findUnique({ where: {id}})
+    static async obterPorId(id: string): Promise<Usuario> {
+        const usuario = await this.db.usuario.findUnique({
+            where: {id},
+        })
+        return usuario as Usuario
     }
 
 }
